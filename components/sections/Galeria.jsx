@@ -1,15 +1,25 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { X, ChevronLeft, ChevronRight, Play, Plus } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Play } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
 import { GALLERY, GALLERY_VIDEOS } from '@/lib/config'
 
-const INITIAL_VISIBLE = 6
+function chunkHoneycomb(arr) {
+  const rows = []
+  let i = 0
+  let big = true
+  while (i < arr.length) {
+    const size = big ? 3 : 2
+    rows.push(arr.slice(i, i + size))
+    i += size
+    big = !big
+  }
+  return rows
+}
 
 export default function Galeria() {
   const [openIndex, setOpenIndex] = useState(null)
-  const [showAll, setShowAll] = useState(false)
   const [activeVideo, setActiveVideo] = useState(null)
 
   useEffect(() => {
@@ -27,7 +37,9 @@ export default function Galeria() {
     }
   }, [openIndex])
 
-  const visible = showAll ? GALLERY : GALLERY.slice(0, INITIAL_VISIBLE)
+  const rows = chunkHoneycomb(GALLERY)
+
+  let cellIndex = 0
 
   return (
     <section id="galeria" className="section-padding bg-cream-2/40">
@@ -46,45 +58,36 @@ export default function Galeria() {
           </div>
         </div>
 
-        {/* Mosaico controlado: 1 hero + 5 cuadradas */}
-        <div className="grid grid-cols-2 md:grid-cols-6 auto-rows-[140px] sm:auto-rows-[180px] md:auto-rows-[200px] gap-2 md:gap-3">
-          {visible.map((img, i) => {
-            const isHero = !showAll && i === 0
-            return (
-              <button
-                key={img.id}
-                type="button"
-                onClick={() => setOpenIndex(i)}
-                className={[
-                  'relative overflow-hidden rounded-2xl group focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30',
-                  isHero
-                    ? 'col-span-2 row-span-2 md:col-span-3 md:row-span-2'
-                    : 'col-span-1 md:col-span-2 row-span-1',
-                ].join(' ')}
-                aria-label={`Abrir foto ${i + 1}`}
-              >
-                <SmartImage
-                  src={img.src}
-                  alt={img.alt}
-                  className="absolute inset-0 w-full h-full"
-                  imgClassName="transition-transform duration-500 group-hover:scale-[1.04]"
-                  variant="cream"
-                  sizes={isHero ? '(min-width:768px) 50vw, 100vw' : '(min-width:768px) 33vw, 50vw'}
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </button>
-            )
-          })}
+        {/* Panal hexagonal */}
+        <div className="hex-grid">
+          {rows.map((row, rowIdx) => (
+            <div key={rowIdx} className="hex-row">
+              {row.map((img) => {
+                const idx = cellIndex++
+                return (
+                  <button
+                    key={img.id}
+                    type="button"
+                    onClick={() => setOpenIndex(idx)}
+                    className="hex-cell"
+                    aria-label={`Abrir foto ${idx + 1}: ${img.alt}`}
+                  >
+                    <span className="hex-cell__inner">
+                      <SmartImage
+                        src={img.src}
+                        alt={img.alt}
+                        className="absolute inset-0 w-full h-full"
+                        variant="cream"
+                        sizes="(min-width:1024px) 200px, (min-width:768px) 22vw, 30vw"
+                      />
+                      <span className="hex-cell__overlay" aria-hidden="true" />
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          ))}
         </div>
-
-        {!showAll && GALLERY.length > INITIAL_VISIBLE && (
-          <div className="mt-7 flex justify-center">
-            <button type="button" onClick={() => setShowAll(true)} className="btn-outline">
-              <Plus className="h-4 w-4" />
-              Ver más fotos
-            </button>
-          </div>
-        )}
 
         {/* Videos */}
         {GALLERY_VIDEOS.length > 0 && (
@@ -110,7 +113,6 @@ export default function Galeria() {
                       className="group absolute inset-0 w-full h-full"
                       aria-label="Reproducir video"
                     >
-                      {/* Preview real del video sin poster: muestra el primer frame */}
                       <video
                         src={v.src}
                         muted

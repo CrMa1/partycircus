@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { Check, MessageCircle, Info, Calendar, Users, Clock, Tag, ArrowRight, CalendarCheck, ShieldCheck } from 'lucide-react'
+import { Check, MessageCircle, Info, Calendar, Users, Clock, Tag, ArrowRight, CalendarCheck, ShieldCheck, Ticket, X as XIcon } from 'lucide-react'
 import { PACKAGES, SCHEDULES, PEOPLE_OPTIONS } from '@/lib/config'
 import { getPrice, formatMXN } from '@/lib/pricing'
 import { whatsappUrl } from '@/lib/whatsapp'
+import { ACTIVE_COUPON, calculateDiscount, isCouponMatch, normalizeCouponCode } from '@/lib/coupon'
 
 const SCHEDULE_META = {
   lunjue: { tier: 'Tarifa base', dot: 'bg-secondary' },
@@ -38,6 +39,9 @@ export default function Cotizador() {
   const [date, setDate] = useState('')
   const [scheduleId, setScheduleId] = useState('lunjue')
   const [saturdayExclusive, setSaturdayExclusive] = useState(false)
+  const [couponInput, setCouponInput] = useState('')
+  const [couponApplied, setCouponApplied] = useState(false)
+  const [couponError, setCouponError] = useState('')
 
   const dateIsSaturday = useMemo(() => isSaturday(date), [date])
 
@@ -48,11 +52,33 @@ export default function Cotizador() {
 
   const basePrice = useMemo(() => getPrice(packageId, scheduleId, people), [packageId, scheduleId, people])
   const extras = saturdayExclusive ? SATURDAY_EXCLUSIVE_FEE : 0
-  const total = (basePrice ?? 0) + extras
+  const subtotal = (basePrice ?? 0) + extras
+
+  const { amount: discountAmount, total: discountedTotal } = useMemo(
+    () => (couponApplied ? calculateDiscount(subtotal, ACTIVE_COUPON) : { amount: 0, total: subtotal }),
+    [couponApplied, subtotal]
+  )
 
   const selectedPackage = PACKAGES.find((p) => p.id === packageId)
   const selectedSchedule = SCHEDULES.find((s) => s.id === scheduleId)
   const dateLong = formatDateLong(date)
+
+  function handleApplyCoupon() {
+    if (!ACTIVE_COUPON.enabled) return
+    if (isCouponMatch(couponInput)) {
+      setCouponApplied(true)
+      setCouponError('')
+    } else {
+      setCouponApplied(false)
+      setCouponError('Cupón no válido. Verifica el código e inténtalo de nuevo.')
+    }
+  }
+
+  function handleRemoveCoupon() {
+    setCouponApplied(false)
+    setCouponInput('')
+    setCouponError('')
+  }
 
   const message = useMemo(() => {
     const lines = [
@@ -67,12 +93,20 @@ export default function Cotizador() {
           ? 'Sí, quiero apartar todo el sábado (+$3,000 MXN)'
           : 'No seleccionado'
       }`,
-      `Cotización estimada: ${formatMXN(total)}`,
-      '',
-      '¿Me pueden confirmar disponibilidad, horario y precio final?',
+      `Total estimado: ${formatMXN(subtotal)}`,
     ]
+    if (couponApplied && discountAmount > 0) {
+      lines.push(
+        `Cupón aplicado: ${ACTIVE_COUPON.code}`,
+        `Descuento: -${formatMXN(discountAmount)}`,
+        `Total con cupón: ${formatMXN(discountedTotal)}`,
+        '',
+        `Cupón: ${ACTIVE_COUPON.description}`,
+      )
+    }
+    lines.push('', '¿Me pueden confirmar disponibilidad, horario y precio final?')
     return lines.join('\n')
-  }, [selectedPackage, people, dateLong, selectedSchedule, saturdayExclusive, total])
+  }, [selectedPackage, people, dateLong, selectedSchedule, saturdayExclusive, subtotal, couponApplied, discountAmount, discountedTotal])
 
   return (
     <div id="cotizador" className="mt-16 md:mt-24 scroll-mt-24">
@@ -109,7 +143,15 @@ export default function Cotizador() {
           <div className="lg:col-span-5">
             <QuoteSummary
               basePrice={basePrice}
-              total={total}
+              subtotal={subtotal}
+              discountAmount={discountAmount}
+              discountedTotal={discountedTotal}
+              couponApplied={couponApplied}
+              couponInput={couponInput}
+              setCouponInput={setCouponInput}
+              onApplyCoupon={handleApplyCoupon}
+              onRemoveCoupon={handleRemoveCoupon}
+              couponError={couponError}
               pkg={selectedPackage}
               people={people}
               schedule={selectedSchedule}
@@ -398,8 +440,26 @@ function FieldHeader({ step, icon: Icon, label }) {
 }
 
 /* ─── Resumen ───────────────────────────────────────────────────────────── */
-function QuoteSummary({ basePrice, total, pkg, people, schedule, dateLong, saturdayExclusive, message }) {
+function QuoteSummary({
+  basePrice,
+  subtotal,
+  discountAmount,
+  discountedTotal,
+  couponApplied,
+  couponInput,
+  setCouponInput,
+  onApplyCoupon,
+  onRemoveCoupon,
+  couponError,
+  pkg,
+  people,
+  schedule,
+  dateLong,
+  saturdayExclusive,
+  message,
+}) {
   const meta = SCHEDULE_META[schedule?.id]
+  const hasDiscount = couponApplied && discountAmount > 0
   return (
     <div className="lg:sticky lg:top-24">
       <div className="relative overflow-hidden rounded-3xl bg-navy text-white p-6 md:p-7 shadow-[var(--pc-shadow-card)]">
@@ -417,10 +477,17 @@ function QuoteSummary({ basePrice, total, pkg, people, schedule, dateLong, satur
             )}
           </div>
 
-          <p className="mt-5 font-display font-bold text-5xl md:text-[3.5rem] leading-none tracking-tight">
-            {formatMXN(total)}
+          {hasDiscount && (
+            <p className="mt-4 text-sm text-white/55 line-through">
+              {formatMXN(subtotal)}
+            </p>
+          )}
+          <p className={`${hasDiscount ? 'mt-1' : 'mt-5'} font-display font-bold text-5xl md:text-[3.5rem] leading-none tracking-tight`}>
+            {formatMXN(hasDiscount ? discountedTotal : subtotal)}
           </p>
-          <p className="mt-2 text-sm text-white/60">MXN · estimado total del evento</p>
+          <p className="mt-2 text-sm text-white/60">
+            MXN · {hasDiscount ? 'total con cupón aplicado' : 'estimado total del evento'}
+          </p>
 
           <dl className="mt-6 space-y-3 border-t border-white/10 pt-5 text-sm">
             <Row k="Paquete" v={pkg?.name} />
@@ -437,7 +504,35 @@ function QuoteSummary({ basePrice, total, pkg, people, schedule, dateLong, satur
                 <dd className="text-right font-bold text-accent">+{formatMXN(3000)}</dd>
               </div>
             )}
+            {hasDiscount && (
+              <div className="pt-3 mt-1 border-t border-white/10 space-y-2">
+                <Row k="Total antes" v={formatMXN(subtotal)} />
+                <div className="flex items-baseline justify-between gap-3">
+                  <dt className="text-emerald-300 font-semibold inline-flex items-center gap-1.5">
+                    <Ticket className="h-3.5 w-3.5" />
+                    Cupón {ACTIVE_COUPON.code}
+                  </dt>
+                  <dd className="text-right font-bold text-emerald-300">-{formatMXN(discountAmount)}</dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-3 pt-2 border-t border-white/10">
+                  <dt className="font-bold text-white">Total con cupón</dt>
+                  <dd className="text-right font-display font-bold text-accent text-lg">{formatMXN(discountedTotal)}</dd>
+                </div>
+              </div>
+            )}
           </dl>
+
+          {ACTIVE_COUPON.enabled && (
+            <CouponField
+              value={couponInput}
+              onChange={setCouponInput}
+              onApply={onApplyCoupon}
+              onRemove={onRemoveCoupon}
+              applied={couponApplied}
+              error={couponError}
+              discountAmount={discountAmount}
+            />
+          )}
 
           <a
             href={whatsappUrl(message)}
@@ -459,6 +554,73 @@ function QuoteSummary({ basePrice, total, pkg, people, schedule, dateLong, satur
           Esta estimación <strong className="text-ink">no aparta la fecha</strong>.
         </p>
       </div>
+    </div>
+  )
+}
+
+/* ─── Campo de cupón ────────────────────────────────────────────────────── */
+function CouponField({ value, onChange, onApply, onRemove, applied, error, discountAmount }) {
+  if (applied) {
+    return (
+      <div className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-400/10 p-3.5">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/20 text-emerald-300 shrink-0">
+            <Ticket className="h-4 w-4" />
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-bold text-emerald-200">
+              Cupón {ACTIVE_COUPON.code} aplicado
+            </p>
+            <p className="text-[12px] text-emerald-200/80 leading-snug truncate">
+              {ACTIVE_COUPON.description} · -{formatMXN(discountAmount)}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onRemove}
+            aria-label="Quitar cupón"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors shrink-0"
+          >
+            <XIcon className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-6">
+      <label htmlFor="coupon-input" className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-white/70">
+        <Ticket className="h-3.5 w-3.5 text-accent" />
+        ¿Tienes un cupón?
+      </label>
+      <div className="mt-2 flex gap-2">
+        <input
+          id="coupon-input"
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onApply() } }}
+          placeholder="Ingresa tu código"
+          autoComplete="off"
+          spellCheck="false"
+          className="flex-1 min-w-0 rounded-xl bg-white/10 border border-white/15 px-4 h-11 text-[14px] font-medium text-white placeholder-white/40 uppercase tracking-wider focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/20 transition-all"
+        />
+        <button
+          type="button"
+          onClick={onApply}
+          disabled={!value.trim()}
+          className="rounded-xl bg-accent text-primary-dark font-bold px-4 h-11 text-[13px] uppercase tracking-wider hover:bg-accent/85 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Aplicar
+        </button>
+      </div>
+      {error && (
+        <p className="mt-2 text-[12px] text-red-300 flex items-center gap-1.5">
+          <XIcon className="h-3.5 w-3.5" />
+          {error}
+        </p>
+      )}
     </div>
   )
 }

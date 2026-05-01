@@ -5,6 +5,9 @@ import { X, MessageCircle, Sparkles } from 'lucide-react'
 import SmartImage from './SmartImage'
 import { PROMO_MODAL } from '@/lib/promo'
 import { whatsappUrl } from '@/lib/whatsapp'
+import PromoBackgroundConfetti from './PromoBackgroundConfetti'
+import PromoConfettiCannons from './PromoConfettiCannons'
+import PromoMobileSplash from './PromoMobileSplash'
 
 export default function PromoModal() {
   const [open, setOpen] = useState(false)
@@ -66,12 +69,19 @@ export default function PromoModal() {
       className="pc-promo-backdrop fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-navy/65 backdrop-blur-sm"
       onClick={handleClose}
     >
+      {/* Animaciones desktop — detrás del dialog, no bloquean interacción */}
+      <PromoBackgroundConfetti isOpen={open} />
+      <PromoConfettiCannons isOpen={open} />
+
+      {/* Splash móvil — personaje + confetti durante 5s */}
+      <PromoMobileSplash isOpen={open} />
+
       <div
         ref={dialogRef}
         tabIndex={-1}
         data-state={state}
         onClick={(e) => e.stopPropagation()}
-        className="pc-promo-dialog relative w-full sm:max-w-3xl max-h-[92dvh] flex flex-col sm:flex-row overflow-hidden rounded-t-3xl sm:rounded-3xl bg-surface shadow-2xl border border-border focus:outline-none"
+        className="pc-promo-dialog relative z-[10] w-full sm:max-w-3xl max-h-[92dvh] flex flex-col sm:flex-row overflow-hidden rounded-t-3xl sm:rounded-3xl bg-surface shadow-2xl border border-border focus:outline-none"
       >
         {/* Cinta tricolor superior — identidad de marca */}
         <span

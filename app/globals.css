@@ -188,7 +188,209 @@ h1, h2, h3, h4 {
     .pc-saturday-pulse,
     .pc-promo-backdrop,
     .pc-promo-dialog,
+    .pc-cannon--shoot,
+    .pc-cannon-confetti,
+    .pc-cannon-flash,
+    .pc-bg-confetti-piece,
+    .pc-splash-mobile,
+    .pc-splash-mobile__hero,
+    .pc-splash-burst,
     .reveal { animation: none !important; }
+    .pc-splash-mobile__hero {
+      opacity: 1 !important;
+      transform: translate(-50%, -50%) scale(1) !important;
+    }
+  }
+
+  /* ── Cañones de confetti (PromoModal · solo desktop) ─────────────────────── */
+  .pc-cannon {
+    position: absolute;
+    bottom: 30px;
+    pointer-events: none;
+    opacity: 0;
+    transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+  }
+  .pc-cannon img {
+    display: block;
+    filter: drop-shadow(0 18px 20px rgba(0, 0, 0, 0.25));
+  }
+  .pc-cannon-left  { left: 0;  transform: translateX(-120%) rotate(-8deg); }
+  .pc-cannon-right { right: 0; transform: translateX(120%)  rotate(8deg);  }
+  .pc-cannon-right img { transform: scaleX(-1); }
+  .pc-cannon-left.pc-cannon--visible  { opacity: 1; transform: translateX(-8%) rotate(-8deg); }
+  .pc-cannon-right.pc-cannon--visible { opacity: 1; transform: translateX(8%)  rotate(8deg);  }
+  .pc-cannon--shoot { animation: pc-cannon-kick 0.35s ease; }
+  @keyframes pc-cannon-kick {
+    0%   { filter: none; }
+    35%  { transform: translateX(var(--kick-x)) rotate(var(--kick-rotate)) scale(1.04); }
+    100% { filter: none; }
+  }
+
+  /* Partículas del disparo */
+  .pc-cannon-confetti {
+    position: absolute;
+    width: var(--size);
+    height: var(--height);
+    background: var(--color);
+    border-radius: 2px;
+    opacity: 0;
+    animation: pc-confetti-fly var(--duration) cubic-bezier(0.12, 0.7, 0.25, 1) forwards;
+  }
+  .pc-cannon-confetti--circle { border-radius: 999px; }
+  .pc-cannon-confetti--star {
+    clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  }
+  @keyframes pc-confetti-fly {
+    0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+    65%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--rotate)) scale(0.9); }
+  }
+  .pc-cannon-flash {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 999px;
+    pointer-events: none;
+    background: radial-gradient(circle, #ffffff 0%, #ffe45c 35%, rgba(255,228,92,0) 70%);
+    animation: pc-flash-pop 0.35s ease-out forwards;
+    transform: translate(-50%, -50%);
+  }
+  @keyframes pc-flash-pop {
+    0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.2); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); }
+  }
+
+  /* Confetti de fondo (PromoModal · solo desktop) */
+  .pc-bg-confetti-piece {
+    position: absolute;
+    will-change: transform;
+    animation: pc-bg-confetti-fall 5s linear infinite;
+  }
+  @keyframes pc-bg-confetti-fall {
+    0%   { transform: translate(0, 0) rotate(var(--rot, 0deg)); }
+    100% { transform: translate(var(--drift, 0vw), 120vh) rotate(var(--rot-end, 360deg)); }
+  }
+
+  /* ── Splash móvil del PromoModal (personaje + confetti, 5s, solo <md) ───── */
+  .pc-splash-mobile {
+    animation: pc-splash-fade-in 0.4s ease-out;
+  }
+  .pc-splash-mobile[data-state="closing"] {
+    animation: pc-splash-fade-out 0.4s ease-in forwards;
+  }
+  @keyframes pc-splash-fade-in {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes pc-splash-fade-out {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .pc-splash-mobile__bg {
+    background:
+      radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 65%),
+      linear-gradient(180deg, rgba(214, 40, 40, 0.16) 0%, rgba(37, 99, 235, 0.16) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .pc-splash-mobile__hero {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: clamp(220px, 70vw, 360px);
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+    animation: pc-splash-hero-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+    filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.28));
+    pointer-events: none;
+  }
+  @keyframes pc-splash-hero-in {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  .pc-splash-burst {
+    position: absolute;
+    display: block;
+    border-radius: 2px;
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: pc-splash-burst-fly cubic-bezier(0.12, 0.7, 0.25, 1) forwards;
+  }
+  .pc-splash-burst--circle { border-radius: 999px; }
+  .pc-splash-burst--star {
+    clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  }
+  @keyframes pc-splash-burst-fly {
+    0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+    65%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--x, 0px), var(--y, 0px)) rotate(var(--rotate, 0deg)) scale(0.85); }
+  }
+
+  /* ── Galería tipo panal hexagonal ──────────────────────────────────────── */
+  .hex-grid {
+    --hex-size: clamp(86px, 22vw, 200px);
+    --hex-gap:  clamp(2px, 0.6vw, 6px);
+    --hex-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hex-row {
+    display: flex;
+    gap: var(--hex-gap);
+  }
+  .hex-row + .hex-row {
+    margin-top: calc(var(--hex-size) * -0.25);
+  }
+  .hex-cell {
+    position: relative;
+    width: var(--hex-size);
+    height: var(--hex-size);
+    flex: none;
+    padding: 0;
+    border: 0;
+    background: #ffffff;
+    clip-path: var(--hex-clip);
+    cursor: pointer;
+    transition: filter 0.35s ease;
+  }
+  .hex-cell:hover {
+    filter: drop-shadow(0 8px 14px rgba(17, 24, 39, 0.18));
+  }
+  .hex-cell__inner {
+    position: absolute;
+    inset: 4px;
+    clip-path: var(--hex-clip);
+    background: var(--pc-cream-2, #f3ebd5);
+    overflow: hidden;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hex-cell:hover .hex-cell__inner,
+  .hex-cell:focus-visible .hex-cell__inner {
+    transform: scale(1.06);
+  }
+  .hex-cell__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(31, 41, 55, 0.45), transparent 60%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .hex-cell:hover .hex-cell__overlay {
+    opacity: 1;
+  }
+  .hex-cell:focus-visible {
+    outline: none;
+  }
+  .hex-cell:focus-visible .hex-cell__inner {
+    box-shadow: inset 0 0 0 3px rgba(214, 40, 40, 0.7);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hex-cell, .hex-cell__inner, .hex-cell__overlay { transition: none !important; }
+    .hex-cell:hover .hex-cell__inner { transform: none !important; }
   }
 
   /* Safe area iOS */
