@@ -64,9 +64,14 @@ export const metadata = {
       'max-video-preview': -1,
     },
   },
+  manifest: '/site.webmanifest',
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/apple-icon.png',
   },
   formatDetection: {
     telephone: true,

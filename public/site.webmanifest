@@ -1,0 +1,27 @@
+{
+  "name": "Party Circus Valle Dorado",
+  "short_name": "Party Circus",
+  "description": "Salón de fiestas infantiles en Valle Dorado, Tlalnepantla",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#D62828",
+  "background_color": "#F8F3E7",
+  "display": "standalone",
+  "start_url": "/",
+  "lang": "es-MX"
+}
