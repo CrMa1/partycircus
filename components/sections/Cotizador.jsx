@@ -196,9 +196,8 @@ function SaturdayExclusiveToggle({ checked, onChange }) {
               <CalendarCheck className="h-3 w-3" />
               Beneficio premium
             </span>
-            <h4 className="font-display font-bold text-ink text-xl md:text-2xl mt-3 leading-tight">
-              Sábado exclusivo{' '}
-              <span className="text-primary whitespace-nowrap">+$3,000 MXN</span>
+            <h4 className="font-display font-bold text-ink text-lg md:text-2xl mt-3 leading-tight">
+              Sábado exclusivo <span className="text-primary">+$3,000 MXN</span>
             </h4>
           </div>
 
@@ -219,7 +218,7 @@ function SaturdayExclusiveToggle({ checked, onChange }) {
             >
               <span
                 className={[
-                  'text-[11px] font-bold uppercase tracking-wider transition-colors',
+                  'hidden sm:inline text-[11px] font-bold uppercase tracking-wider transition-colors',
                   checked ? 'text-primary' : 'text-muted',
                 ].join(' ')}
               >
@@ -299,7 +298,7 @@ function PackageSelector({ value, onChange }) {
               onClick={() => onChange(pkg.id)}
               aria-pressed={active}
               className={[
-                'group relative text-left rounded-2xl p-4 md:p-5 transition-all',
+                'group relative h-full text-left rounded-2xl p-4 md:p-5 transition-all',
                 'focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
                 active
                   ? 'bg-primary text-white shadow-[0_18px_40px_-20px_rgba(214,40,40,0.5)] ring-1 ring-primary'
@@ -604,13 +603,13 @@ function CouponField({ value, onChange, onApply, onRemove, applied, error, disco
           placeholder="Ingresa tu código"
           autoComplete="off"
           spellCheck="false"
-          className="flex-1 min-w-0 rounded-xl bg-white/10 border border-white/15 px-4 h-11 text-[14px] font-medium text-white placeholder-white/40 uppercase tracking-wider focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/20 transition-all"
+          className="flex-1 min-w-0 rounded-xl bg-white/10 border border-white/15 px-3.5 sm:px-4 h-11 text-[13px] sm:text-[14px] font-medium text-white placeholder-white/40 uppercase tracking-wide focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/20 transition-all"
         />
         <button
           type="button"
           onClick={onApply}
           disabled={!value.trim()}
-          className="rounded-xl bg-accent text-primary-dark font-bold px-4 h-11 text-[13px] uppercase tracking-wider hover:bg-accent/85 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="rounded-xl bg-accent text-primary-dark font-bold px-3 sm:px-4 h-11 text-[13px] uppercase tracking-wide sm:tracking-wider hover:bg-accent/85 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
         >
           Aplicar
         </button>
@@ -628,8 +627,8 @@ function CouponField({ value, onChange, onApply, onRemove, applied, error, disco
 function Row({ k, v }) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="text-white/55">{k}</dt>
-      <dd className="text-right font-medium text-white truncate max-w-[60%]">{v ?? '—'}</dd>
+      <dt className="text-white/55 shrink-0">{k}</dt>
+      <dd className="text-right font-medium text-white max-w-[65%] leading-snug line-clamp-2 sm:line-clamp-none sm:truncate">{v ?? '—'}</dd>
     </div>
   )
 }
