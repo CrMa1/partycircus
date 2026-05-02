@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const SPLASH_COLORS = ['#e73343', '#ffd233', '#0066d6', '#1fb6ff', '#ff7a00', '#8d2de2', '#ffffff']
-const DURATION_MS = 5000
+const DURATION_MS = 3000
 const SPAWN_INTERVAL_MS = 250
 const BURST_BASE = 14
 
