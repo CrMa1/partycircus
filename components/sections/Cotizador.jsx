@@ -42,6 +42,7 @@ export default function Cotizador() {
   const [couponInput, setCouponInput] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
   const [couponError, setCouponError] = useState('')
+  const [depositReserve, setDepositReserve] = useState(false)
 
   const dateIsSaturday = useMemo(() => isSaturday(date), [date])
 
@@ -104,9 +105,12 @@ export default function Cotizador() {
         `Cupón: ${ACTIVE_COUPON.description}`,
       )
     }
+    if (depositReserve) {
+      lines.push('', 'Me interesa apartar mi fecha con $1,000 MXN.')
+    }
     lines.push('', '¿Me pueden confirmar disponibilidad, horario y precio final?')
     return lines.join('\n')
-  }, [selectedPackage, people, dateLong, selectedSchedule, saturdayExclusive, subtotal, couponApplied, discountAmount, discountedTotal])
+  }, [selectedPackage, people, dateLong, selectedSchedule, saturdayExclusive, subtotal, couponApplied, discountAmount, discountedTotal, depositReserve])
 
   return (
     <div id="cotizador" className="mt-16 md:mt-24 scroll-mt-24">
@@ -152,6 +156,8 @@ export default function Cotizador() {
               onApplyCoupon={handleApplyCoupon}
               onRemoveCoupon={handleRemoveCoupon}
               couponError={couponError}
+              depositReserve={depositReserve}
+              setDepositReserve={setDepositReserve}
               pkg={selectedPackage}
               people={people}
               schedule={selectedSchedule}
@@ -450,6 +456,8 @@ function QuoteSummary({
   onApplyCoupon,
   onRemoveCoupon,
   couponError,
+  depositReserve,
+  setDepositReserve,
   pkg,
   people,
   schedule,
@@ -532,6 +540,48 @@ function QuoteSummary({
               discountAmount={discountAmount}
             />
           )}
+
+          <label
+            className={[
+              'mt-5 rounded-2xl border p-3.5 flex items-start gap-3 cursor-pointer select-none transition-colors',
+              depositReserve
+                ? 'border-accent/60 bg-accent/15'
+                : 'border-white/15 bg-white/5 hover:bg-white/10',
+            ].join(' ')}
+          >
+            <input
+              type="checkbox"
+              checked={depositReserve}
+              onChange={(e) => setDepositReserve(e.target.checked)}
+              className="sr-only peer"
+              aria-label="Quiero apartar mi fecha con $1,000 MXN"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-[14px] font-bold text-white leading-snug">
+                Aparta tu fecha con{' '}
+                <span className="text-accent font-display text-[16px] tracking-tight">
+                  $1,000 MXN
+                </span>
+              </p>
+              <p className="mt-1 text-[12px] text-white/70 leading-snug">
+                El anticipo se toma a cuenta de tu evento. La disponibilidad final se confirma por WhatsApp.
+              </p>
+            </div>
+            <span className="relative inline-block h-7 w-12 shrink-0 mt-0.5">
+              <span
+                className={[
+                  'absolute inset-0 rounded-full transition-colors',
+                  depositReserve ? 'bg-accent' : 'bg-white/20',
+                ].join(' ')}
+              />
+              <span
+                className={[
+                  'absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200',
+                  depositReserve ? 'translate-x-5' : '',
+                ].join(' ')}
+              />
+            </span>
+          </label>
 
           <a
             href={whatsappUrl(message)}
