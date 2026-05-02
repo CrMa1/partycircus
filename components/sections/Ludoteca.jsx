@@ -51,13 +51,15 @@ export default function Ludoteca() {
                   key={label}
                   className="rounded-2xl bg-surface border border-border p-4"
                 >
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-muted">
-                    {label}
-                  </p>
-                  <p className="mt-0.5 text-[14px] font-semibold text-ink leading-snug">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">
+                      {label}
+                    </p>
+                  </div>
+                  <p className="mt-2.5 text-[14px] font-semibold text-ink leading-snug">
                     {value}
                   </p>
                 </li>

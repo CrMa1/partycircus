@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+}
+
 /* ───────────────────────────────────────────────────────────────────────────
    PARTY CIRCUS — Sistema de diseño
    Para cambiar la identidad: edita SOLO las variables de :root.

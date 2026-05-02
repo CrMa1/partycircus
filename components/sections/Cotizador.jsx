@@ -385,7 +385,7 @@ function DateSelector({ value, onChange }) {
         value={value}
         min={todayISO()}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-3 w-full rounded-2xl border border-border-strong bg-surface px-5 h-14 text-[15px] font-medium text-ink focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/15 transition-all"
+        className="mt-3 block w-full min-w-0 max-w-full appearance-none rounded-2xl border border-border-strong bg-surface px-5 h-14 text-[15px] font-medium text-ink focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/15 transition-all"
       />
       <p className="mt-2 text-xs text-muted">
         La disponibilidad final se confirma por WhatsApp.
