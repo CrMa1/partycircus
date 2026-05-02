@@ -114,10 +114,10 @@ export default function Galeria() {
                       aria-label="Reproducir video"
                     >
                       <video
-                        src={v.src}
+                        src={`${v.src}#t=0.1`}
                         muted
                         playsInline
-                        preload="metadata"
+                        preload="auto"
                         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                       />
                       <span className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent" />

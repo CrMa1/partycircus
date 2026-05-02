@@ -51,8 +51,9 @@ export default function PackageDetailModal({ open, onClose, pkg }) {
           rel="noopener noreferrer"
           className="btn-whatsapp flex-1"
         >
-          <MessageCircle className="h-5 w-5" />
-          Cotizar este paquete por WhatsApp
+          <MessageCircle className="h-5 w-5 shrink-0" />
+          <span className="sm:hidden">Cotizar paquete</span>
+          <span className="hidden sm:inline">Cotizar este paquete por WhatsApp</span>
         </a>
         <button type="button" onClick={onClose} className="btn-outline flex-1">
           Cerrar

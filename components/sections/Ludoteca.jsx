@@ -79,12 +79,13 @@ export default function Ludoteca() {
                 href={whatsappUrl(WHATSAPP_MESSAGE)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp"
+                className="btn-whatsapp w-full sm:w-auto"
               >
-                <MessageCircle className="h-5 w-5" />
-                Cotizar ludoteca por WhatsApp
+                <MessageCircle className="h-5 w-5 shrink-0" />
+                <span className="sm:hidden">Cotizar ludoteca</span>
+                <span className="hidden sm:inline">Cotizar ludoteca por WhatsApp</span>
               </a>
-              <a href="#paquetes" className="btn-outline">
+              <a href="#paquetes" className="btn-outline w-full sm:w-auto">
                 Ver paquetes de evento
                 <ArrowRight className="h-4 w-4" />
               </a>
