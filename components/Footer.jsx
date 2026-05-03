@@ -79,7 +79,7 @@ export default function Footer() {
               </li>
               <li className="flex gap-2.5">
                 <Clock className="h-4 w-4 mt-0.5 text-accent shrink-0" />
-                <span>Lun – Dom · 9:00 a 21:00 h</span>
+                <span>Lun a Vie · 10:00 a 18:00 h - Sab y Dom · 11:00 a 16:00 h</span>
               </li>
               <li className="flex gap-2.5">
                 <Phone className="h-4 w-4 mt-0.5 text-accent shrink-0" />

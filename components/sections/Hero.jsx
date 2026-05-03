@@ -56,8 +56,14 @@ export default function Hero() {
 
             {/* Datos rápidos */}
             <dl className="mt-8 grid grid-cols-3 gap-4 max-w-xl border-t border-border pt-6">
-              <Stat icon={MapPin} label="Ubicación" value="Valle Dorado" />
-              <Stat icon={Clock} label="Horario" value="9:00–21:00 h" />
+              <Stat
+                icon={MapPin}
+                label="Ubicación"
+                value="Valle Dorado"
+                href={BUSINESS.mapsLink}
+                ariaLabel={`Abrir ubicación de Party Circus Valle Dorado en Google Maps: ${BUSINESS.addressFull}`}
+              />
+              <Stat icon={Clock} label="Horario" value="10:00–18:00 h" />
               <Stat icon={Star} label="Calificación" value={`${BUSINESS.socialProof.googleRating} / 5 · ${BUSINESS.socialProof.googleReviews}`} />
             </dl>
           </div>
@@ -111,14 +117,28 @@ export default function Hero() {
   )
 }
 
-function Stat({ icon: Icon, label, value }) {
+function Stat({ icon: Icon, label, value, href, ariaLabel }) {
   return (
     <div>
       <dt className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold text-muted">
         <Icon className="h-3 w-3" />
         {label}
       </dt>
-      <dd className="mt-1 text-sm font-semibold text-ink">{value}</dd>
+      <dd className="mt-1 text-sm font-semibold text-ink">
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={ariaLabel}
+            className="inline-flex items-center gap-1 text-ink hover:text-primary underline-offset-4 hover:underline transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-sm"
+          >
+            {value}
+          </a>
+        ) : (
+          value
+        )}
+      </dd>
     </div>
   )
 }

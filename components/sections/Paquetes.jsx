@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, MessageCircle, ArrowRight, Star, Eye } from 'lucide-react'
+import { Check, MessageCircle, ArrowRight, Star, Eye, Plus } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
 import PackageDetailModal from '@/components/PackageDetailModal'
 import { PACKAGES } from '@/lib/config'
@@ -73,14 +73,33 @@ function PackageCard({ pkg, onOpenDetail }) {
         <p className="text-[15px] text-ink-soft leading-relaxed">{pkg.highlight}</p>
 
         <ul className="mt-5 space-y-2.5 flex-1">
-          {pkg.includes.map((item) => (
-            <li key={item} className="flex items-start gap-2.5 text-[14.5px] text-ink leading-snug">
-              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Check className="h-3 w-3" strokeWidth={3} />
-              </span>
-              <span>{item}</span>
-            </li>
-          ))}
+          {pkg.includes.map((item) => {
+            const isInherit = item.startsWith('Todo lo que incluye')
+            if (isInherit) {
+              return (
+                <li
+                  key={item}
+                  className="inline-flex items-center gap-2 leading-snug rounded-xl bg-accent/15 border border-accent/40 px-3 py-2 text-[13.5px] font-bold text-primary-dark w-fit"
+                >
+                  <span>{item}</span>
+                  <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-primary-dark">
+                    <Plus className="h-3 w-3" strokeWidth={3} />
+                  </span>
+                </li>
+              )
+            }
+            return (
+              <li
+                key={item}
+                className="flex items-start gap-2.5 text-[14.5px] text-ink leading-snug"
+              >
+                <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Check className="h-3 w-3" strokeWidth={3} />
+                </span>
+                <span>{item}</span>
+              </li>
+            )
+          })}
         </ul>
 
         <button

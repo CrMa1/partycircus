@@ -1,7 +1,7 @@
 import { MapPin, Phone, Clock, MessageCircle, Navigation, Facebook, Instagram } from 'lucide-react'
 import { BUSINESS } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
-import { NEARBY_ZONES } from '@/lib/seo'
+import { NEARBY_ZONES, EXTENDED_REFERENCES } from '@/lib/seo'
 
 export default function Ubicacion() {
   return (
@@ -117,19 +117,24 @@ export default function Ubicacion() {
           </div>
         </div>
 
-        {/* Zonas cercanas — bloque SEO local */}
+        {/* Zonas de cobertura — bloque SEO local */}
         <div className="mt-10 md:mt-12 rounded-2xl bg-cream-2/40 border border-border p-5 md:p-6">
-          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-            <div className="md:max-w-md">
-              <h3 className="font-display font-bold text-ink text-lg md:text-xl">Zonas de referencia</h3>
-              <p className="mt-2 text-sm md:text-[15px] text-ink-soft leading-relaxed">
-                Recibimos familias de toda la zona metropolitana. Por nuestra
-                ubicación en Valle Dorado, somos una opción cómoda si vienes de
-                Tlalnepantla, Satélite, Mundo E, Arboledas, Naucalpan, Atizapán,
-                Lomas Verdes <strong className="text-ink">o cualquier otra zona</strong>.
-              </p>
-            </div>
-            <ul className="flex flex-wrap gap-2 md:flex-1">
+          <div className="md:max-w-2xl">
+            <h3 className="font-display font-bold text-ink text-lg md:text-xl">Zonas de cobertura</h3>
+            <p className="mt-2 text-sm md:text-[15px] text-ink-soft leading-relaxed">
+              Recibimos familias de distintas zonas del Estado de México y CDMX.
+              Por nuestra ubicación en Valle Dorado, somos una opción cómoda
+              para familias de Tlalnepantla, Atizapán, Naucalpan, Cuautitlán
+              Izcalli, Tultitlán, Nicolás Romero, Gustavo A. Madero{' '}
+              <strong className="text-ink">y zonas cercanas</strong>.
+            </p>
+          </div>
+
+          <div className="mt-5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">
+              Municipios y zonas principales
+            </p>
+            <ul className="mt-2.5 flex flex-wrap gap-2">
               {NEARBY_ZONES.map((zone) => (
                 <li key={zone}>
                   <span className="pc-chip">
@@ -139,6 +144,15 @@ export default function Ubicacion() {
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div className="mt-5 pt-4 border-t border-border">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">
+              Colonias y referencias cercanas
+            </p>
+            <p className="mt-1.5 text-[13px] text-ink-soft leading-relaxed">
+              También nos visitan desde {EXTENDED_REFERENCES.slice(0, -1).join(', ')} y {EXTENDED_REFERENCES.slice(-1)[0]}, entre otras zonas cercanas.
+            </p>
           </div>
         </div>
       </div>

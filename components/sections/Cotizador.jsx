@@ -5,7 +5,7 @@ import { Check, MessageCircle, Info, Calendar, Users, Clock, Tag, ArrowRight, Ca
 import { PACKAGES, SCHEDULES, PEOPLE_OPTIONS } from '@/lib/config'
 import { getPrice, formatMXN } from '@/lib/pricing'
 import { whatsappUrl } from '@/lib/whatsapp'
-import { ACTIVE_COUPON, calculateDiscount, isCouponMatch, normalizeCouponCode } from '@/lib/coupon'
+import { ACTIVE_COUPON, calculateDiscount, isCouponMatch } from '@/lib/coupon'
 
 const SCHEDULE_META = {
   lunjue: { tier: 'Tarifa base', dot: 'bg-secondary' },
@@ -146,7 +146,6 @@ export default function Cotizador() {
           {/* Resumen */}
           <div className="lg:col-span-5">
             <QuoteSummary
-              basePrice={basePrice}
               subtotal={subtotal}
               discountAmount={discountAmount}
               discountedTotal={discountedTotal}
@@ -331,12 +330,17 @@ function PackageSelector({ value, onChange }) {
                 </span>
               </div>
               <ul className={`mt-4 space-y-1.5 text-[13px] ${active ? 'text-white/90' : 'text-ink-soft'}`}>
-                {pkg.includes.slice(0, 4).map((inc) => (
-                  <li key={inc} className="flex items-start gap-2">
-                    <span className={`mt-1.5 h-1 w-1 rounded-full shrink-0 ${active ? 'bg-accent' : 'bg-ink/40'}`} />
-                    <span>{inc}</span>
-                  </li>
-                ))}
+                {pkg.includes.slice(0, 4).map((inc) => {
+                  const isInherit = inc.startsWith('Todo lo que incluye')
+                  return (
+                    <li key={inc} className="flex items-start gap-2">
+                      <span className={`mt-1.5 h-1 w-1 rounded-full shrink-0 ${active ? 'bg-accent' : 'bg-ink/40'}`} />
+                      <span className={isInherit ? `font-bold ${active ? 'text-accent' : 'text-primary-dark'}` : ''}>
+                        {inc}
+                      </span>
+                    </li>
+                  )
+                })}
               </ul>
             </button>
           )
@@ -446,7 +450,6 @@ function FieldHeader({ step, icon: Icon, label }) {
 
 /* ─── Resumen ───────────────────────────────────────────────────────────── */
 function QuoteSummary({
-  basePrice,
   subtotal,
   discountAmount,
   discountedTotal,

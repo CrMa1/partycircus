@@ -38,7 +38,7 @@ export default function CTAFinal() {
                   </a>
                 </div>
                 <p className="mt-4 text-xs text-muted">
-                  Lun a Dom · 9:00 a 21:00 h · Valle Dorado, Tlalnepantla
+                  Lun a Vie · 10:00 a 18:00 h - Sab y Dom · 11:00 a 16:00 h · Valle Dorado, Tlalnepantla
                 </p>
               </div>
             </div>

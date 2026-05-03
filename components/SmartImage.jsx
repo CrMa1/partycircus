@@ -84,9 +84,12 @@ function Placeholder({ className = '', alt = '', variant = 'auto' }) {
       />
 
       <div className="relative flex flex-col items-center gap-2.5 px-6 text-center max-w-[85%]">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white font-display font-bold text-sm shadow-md">
-          PC
-        </span>
+        <img
+          src="/images/party-circus/logo/party-circus-logo-circular.png"
+          alt=""
+          aria-hidden="true"
+          className="h-14 w-14 rounded-full shadow-md object-cover"
+        />
         <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
           Party Circus
         </span>
