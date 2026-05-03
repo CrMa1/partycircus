@@ -29,8 +29,8 @@ export default function Nosotros() {
 
             {/* Sello flotante: años / abierto */}
             <div className="hidden md:block absolute -bottom-6 -right-6 lg:right-6 rounded-2xl bg-primary text-white px-5 py-4 shadow-[var(--pc-shadow-pop)]">
-              <p className="font-display font-bold text-3xl leading-none">9–21 h</p>
-              <p className="text-xs text-white/85 mt-1">Lunes a domingo</p>
+              <p className="font-display font-bold  leading-none">10-18 h · 11-16 h</p>
+              <p className="text-xs text-white/85 mt-1">Lun a Vie - Sab y Dom</p>
             </div>
           </div>
 

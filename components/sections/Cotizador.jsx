@@ -5,7 +5,7 @@ import { Check, MessageCircle, Info, Calendar, Users, Clock, Tag, ArrowRight, Ca
 import { PACKAGES, SCHEDULES, PEOPLE_OPTIONS } from '@/lib/config'
 import { getPrice, formatMXN } from '@/lib/pricing'
 import { whatsappUrl } from '@/lib/whatsapp'
-import { ACTIVE_COUPON, calculateDiscount, isCouponMatch } from '@/lib/coupon'
+import { calculateDiscount, findCoupon, hasEnabledCoupons } from '@/lib/coupon'
 
 const SCHEDULE_META = {
   lunjue: { tier: 'Tarifa base', dot: 'bg-secondary' },
@@ -40,7 +40,7 @@ export default function Cotizador() {
   const [scheduleId, setScheduleId] = useState('lunjue')
   const [saturdayExclusive, setSaturdayExclusive] = useState(false)
   const [couponInput, setCouponInput] = useState('')
-  const [couponApplied, setCouponApplied] = useState(false)
+  const [appliedCoupon, setAppliedCoupon] = useState(null)
   const [couponError, setCouponError] = useState('')
   const [depositReserve, setDepositReserve] = useState(false)
 
@@ -56,8 +56,8 @@ export default function Cotizador() {
   const subtotal = (basePrice ?? 0) + extras
 
   const { amount: discountAmount, total: discountedTotal } = useMemo(
-    () => (couponApplied ? calculateDiscount(subtotal, ACTIVE_COUPON) : { amount: 0, total: subtotal }),
-    [couponApplied, subtotal]
+    () => (appliedCoupon ? calculateDiscount(subtotal, appliedCoupon) : { amount: 0, total: subtotal }),
+    [appliedCoupon, subtotal]
   )
 
   const selectedPackage = PACKAGES.find((p) => p.id === packageId)
@@ -65,18 +65,19 @@ export default function Cotizador() {
   const dateLong = formatDateLong(date)
 
   function handleApplyCoupon() {
-    if (!ACTIVE_COUPON.enabled) return
-    if (isCouponMatch(couponInput)) {
-      setCouponApplied(true)
+    if (!hasEnabledCoupons()) return
+    const match = findCoupon(couponInput)
+    if (match) {
+      setAppliedCoupon(match)
       setCouponError('')
     } else {
-      setCouponApplied(false)
+      setAppliedCoupon(null)
       setCouponError('Cupón no válido. Verifica el código e inténtalo de nuevo.')
     }
   }
 
   function handleRemoveCoupon() {
-    setCouponApplied(false)
+    setAppliedCoupon(null)
     setCouponInput('')
     setCouponError('')
   }
@@ -96,13 +97,13 @@ export default function Cotizador() {
       }`,
       `Total estimado: ${formatMXN(subtotal)}`,
     ]
-    if (couponApplied && discountAmount > 0) {
+    if (appliedCoupon && discountAmount > 0) {
       lines.push(
-        `Cupón aplicado: ${ACTIVE_COUPON.code}`,
+        `Cupón aplicado: ${appliedCoupon.code}`,
         `Descuento: -${formatMXN(discountAmount)}`,
         `Total con cupón: ${formatMXN(discountedTotal)}`,
         '',
-        `Cupón: ${ACTIVE_COUPON.description}`,
+        `Cupón: ${appliedCoupon.description}`,
       )
     }
     if (depositReserve) {
@@ -110,7 +111,7 @@ export default function Cotizador() {
     }
     lines.push('', '¿Me pueden confirmar disponibilidad, horario y precio final?')
     return lines.join('\n')
-  }, [selectedPackage, people, dateLong, selectedSchedule, saturdayExclusive, subtotal, couponApplied, discountAmount, discountedTotal, depositReserve])
+  }, [selectedPackage, people, dateLong, selectedSchedule, saturdayExclusive, subtotal, appliedCoupon, discountAmount, discountedTotal, depositReserve])
 
   return (
     <div id="cotizador" className="mt-16 md:mt-24 scroll-mt-24">
@@ -149,7 +150,7 @@ export default function Cotizador() {
               subtotal={subtotal}
               discountAmount={discountAmount}
               discountedTotal={discountedTotal}
-              couponApplied={couponApplied}
+              appliedCoupon={appliedCoupon}
               couponInput={couponInput}
               setCouponInput={setCouponInput}
               onApplyCoupon={handleApplyCoupon}
@@ -453,7 +454,7 @@ function QuoteSummary({
   subtotal,
   discountAmount,
   discountedTotal,
-  couponApplied,
+  appliedCoupon,
   couponInput,
   setCouponInput,
   onApplyCoupon,
@@ -469,7 +470,7 @@ function QuoteSummary({
   message,
 }) {
   const meta = SCHEDULE_META[schedule?.id]
-  const hasDiscount = couponApplied && discountAmount > 0
+  const hasDiscount = !!appliedCoupon && discountAmount > 0
   return (
     <div className="lg:sticky lg:top-24">
       <div className="relative overflow-hidden rounded-3xl bg-navy text-white p-6 md:p-7 shadow-[var(--pc-shadow-card)]">
@@ -520,7 +521,7 @@ function QuoteSummary({
                 <div className="flex items-baseline justify-between gap-3">
                   <dt className="text-emerald-300 font-semibold inline-flex items-center gap-1.5">
                     <Ticket className="h-3.5 w-3.5" />
-                    Cupón {ACTIVE_COUPON.code}
+                    Cupón {appliedCoupon.code}
                   </dt>
                   <dd className="text-right font-bold text-emerald-300">-{formatMXN(discountAmount)}</dd>
                 </div>
@@ -532,13 +533,13 @@ function QuoteSummary({
             )}
           </dl>
 
-          {ACTIVE_COUPON.enabled && (
+          {hasEnabledCoupons() && (
             <CouponField
               value={couponInput}
               onChange={setCouponInput}
               onApply={onApplyCoupon}
               onRemove={onRemoveCoupon}
-              applied={couponApplied}
+              appliedCoupon={appliedCoupon}
               error={couponError}
               discountAmount={discountAmount}
             />
@@ -612,8 +613,8 @@ function QuoteSummary({
 }
 
 /* ─── Campo de cupón ────────────────────────────────────────────────────── */
-function CouponField({ value, onChange, onApply, onRemove, applied, error, discountAmount }) {
-  if (applied) {
+function CouponField({ value, onChange, onApply, onRemove, appliedCoupon, error, discountAmount }) {
+  if (appliedCoupon) {
     return (
       <div className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-400/10 p-3.5">
         <div className="flex items-center gap-3">
@@ -622,10 +623,10 @@ function CouponField({ value, onChange, onApply, onRemove, applied, error, disco
           </span>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-emerald-200">
-              Cupón {ACTIVE_COUPON.code} aplicado
+              Cupón {appliedCoupon.code} aplicado
             </p>
             <p className="text-[12px] text-emerald-200/80 leading-snug truncate">
-              {ACTIVE_COUPON.description} · -{formatMXN(discountAmount)}
+              {appliedCoupon.description} · -{formatMXN(discountAmount)}
             </p>
           </div>
           <button

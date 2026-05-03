@@ -45,7 +45,7 @@ export default function Ubicacion() {
               <p className="text-ink-soft leading-relaxed">{BUSINESS.addressFull}</p>
             </Row>
             <Row icon={Clock} title="Horario">
-              <p className="text-ink-soft">Lunes a domingo · 9:00 a 21:00 h</p>
+              <p className="text-ink-soft">Lun a Vie · 10:00 a 18:00 h · Sab y Dom · 11:00 a 16:00 h</p>
             </Row>
             <Row icon={Phone} title="Contacto">
               <a href={`tel:${BUSINESS.phoneTel}`} className="block text-ink-soft hover:text-primary">{BUSINESS.phone}</a>
