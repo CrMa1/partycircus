@@ -16,7 +16,7 @@ const WHATSAPP_MESSAGE = [
 
 const HIGHLIGHTS = [
   { icon: CalendarDays, label: 'Días', value: 'Lunes a jueves' },
-  { icon: Clock, label: 'Horario', value: '10:00 a.m. – 6:00 p.m.' },
+  { icon: Clock, label: 'Horario', value: 'L · V 10:00–18:00 h\nS · D 11:00–16:00 h' },
   { icon: MapPin, label: 'Sede', value: 'Valle Dorado, Tlalnepantla' },
 ]
 
@@ -59,7 +59,7 @@ export default function Ludoteca() {
                       {label}
                     </p>
                   </div>
-                  <p className="mt-2.5 text-[14px] font-semibold text-ink leading-snug">
+                  <p className="mt-2.5 text-[14px] font-semibold text-ink leading-snug whitespace-pre-line">
                     {value}
                   </p>
                 </li>

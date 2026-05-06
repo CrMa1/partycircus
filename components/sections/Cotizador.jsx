@@ -6,11 +6,12 @@ import { PACKAGES, SCHEDULES, PEOPLE_OPTIONS } from '@/lib/config'
 import { getPrice, formatMXN } from '@/lib/pricing'
 import { whatsappUrl } from '@/lib/whatsapp'
 import { calculateDiscount, findCoupon, hasEnabledCoupons } from '@/lib/coupon'
+import { isHighTariffDate } from '@/lib/calendar'
 
 const SCHEDULE_META = {
-  lunjue: { tier: 'Tarifa base', dot: 'bg-secondary' },
-  vidofes: { tier: 'Tarifa alta', dot: 'bg-primary' },
-  sabtarde: { tier: 'Tarifa especial', dot: 'bg-accent' },
+  lunjue: { tier: '', dot: 'bg-secondary' },
+  vidofes: { tier: '', dot: 'bg-primary' },
+  sabtarde: { tier: '', dot: 'bg-accent' },
 }
 
 const SATURDAY_EXCLUSIVE_FEE = 3000
@@ -23,6 +24,23 @@ function isSaturday(dateString) {
   if (!year || !month || !day) return false
   const date = new Date(year, month - 1, day)
   return date.getDay() === 6
+}
+
+function getDayOfWeek(dateString) {
+  if (!dateString) return null
+  const [year, month, day] = dateString.split('-').map(Number)
+  if (!year || !month || !day) return null
+  return new Date(year, month - 1, day).getDay()
+}
+
+// Devuelve los IDs de horario válidos para la fecha. null = sin restricción.
+function getValidSchedulesForDate(dateString) {
+  const dow = getDayOfWeek(dateString)
+  if (dow == null) return null
+  if (isHighTariffDate(dateString)) return ['vidofes'] // festivo o sin clases SEP
+  if (dow === 6) return ['lunjue', 'sabtarde']         // sábado: mañana o tarde
+  if (dow === 0 || dow === 5) return ['vidofes']       // domingo o viernes
+  return ['lunjue']                                     // lunes a jueves
 }
 
 function formatDateLong(iso) {
@@ -45,11 +63,19 @@ export default function Cotizador() {
   const [depositReserve, setDepositReserve] = useState(false)
 
   const dateIsSaturday = useMemo(() => isSaturday(date), [date])
+  const validSchedules = useMemo(() => getValidSchedulesForDate(date), [date])
 
   // Si la fecha deja de ser sábado, desactivar el extra automáticamente
   useEffect(() => {
     if (!dateIsSaturday && saturdayExclusive) setSaturdayExclusive(false)
   }, [dateIsSaturday, saturdayExclusive])
+
+  // Si el horario seleccionado no es válido para la fecha, ajustarlo al primero válido
+  useEffect(() => {
+    if (validSchedules && !validSchedules.includes(scheduleId)) {
+      setScheduleId(validSchedules[0])
+    }
+  }, [validSchedules, scheduleId])
 
   const basePrice = useMemo(() => getPrice(packageId, scheduleId, people), [packageId, scheduleId, people])
   const extras = saturdayExclusive ? SATURDAY_EXCLUSIVE_FEE : 0
@@ -132,7 +158,7 @@ export default function Cotizador() {
               <PackageSelector value={packageId} onChange={setPackageId} />
               <PeopleSelector value={people} onChange={setPeople} />
               <DateSelector value={date} onChange={setDate} />
-              <ScheduleSelector value={scheduleId} onChange={setScheduleId} />
+              <ScheduleSelector value={scheduleId} onChange={setScheduleId} validIds={validSchedules} />
 
               {/* Extra: Sábado exclusivo — solo si la fecha es sábado */}
               {dateIsSaturday && (
@@ -382,6 +408,7 @@ function PeopleSelector({ value, onChange }) {
 
 function DateSelector({ value, onChange }) {
   const itsSat = isSaturday(value)
+  const itsHigh = isHighTariffDate(value)
   return (
     <fieldset>
       <FieldHeader step="3" icon={Calendar} label="Fecha deseada" />
@@ -394,7 +421,12 @@ function DateSelector({ value, onChange }) {
       />
       <p className="mt-2 text-xs text-muted">
         La disponibilidad final se confirma por WhatsApp.
-        {itsSat && (
+        {itsHigh && (
+          <span className="block mt-1 text-primary font-semibold">
+            Día festivo o sin clases — aplica tarifa alta.
+          </span>
+        )}
+        {itsSat && !itsHigh && (
           <span className="block mt-1 text-primary font-semibold">
             Tu fecha cae en sábado: puedes agregar la opción Sábado exclusivo abajo.
           </span>
@@ -404,7 +436,8 @@ function DateSelector({ value, onChange }) {
   )
 }
 
-function ScheduleSelector({ value, onChange }) {
+function ScheduleSelector({ value, onChange, validIds }) {
+  const restricted = Array.isArray(validIds)
   return (
     <fieldset>
       <FieldHeader step="4" icon={Clock} label="Horario" />
@@ -412,27 +445,42 @@ function ScheduleSelector({ value, onChange }) {
         {SCHEDULES.map((s) => {
           const active = value === s.id
           const meta = SCHEDULE_META[s.id]
+          const disabled = restricted && !validIds.includes(s.id)
           return (
             <button
               key={s.id}
               type="button"
-              onClick={() => onChange(s.id)}
+              onClick={() => { if (!disabled) onChange(s.id) }}
               aria-pressed={active}
+              aria-disabled={disabled}
+              disabled={disabled}
               className={[
                 'relative text-left rounded-xl border p-4 transition-all',
                 'focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
-                active ? 'bg-primary border-primary text-white' : 'bg-surface border-border-strong text-ink hover:border-primary',
+                disabled
+                  ? 'bg-cream-2/40 border-border text-muted cursor-not-allowed opacity-60'
+                  : active
+                    ? 'bg-primary border-primary text-white'
+                    : 'bg-surface border-border-strong text-ink hover:border-primary',
               ].join(' ')}
             >
               <div className="flex items-center gap-2 mb-2">
-                <span className={`h-2 w-2 rounded-full ${active ? 'bg-accent' : meta.dot}`} />
-                <span className={`text-[10px] font-bold uppercase tracking-[0.16em] ${active ? 'text-white/80' : 'text-muted'}`}>{meta.tier}</span>
+                <span className={`h-2 w-2 rounded-full ${disabled ? 'bg-border-strong' : active ? 'bg-accent' : meta.dot}`} />
+                <span className={`text-[10px] font-bold uppercase tracking-[0.16em] ${active && !disabled ? 'text-white/80' : 'text-muted'}`}>{meta.tier}</span>
               </div>
-              <p className={`text-sm font-semibold leading-snug ${active ? 'text-white' : 'text-ink'}`}>{s.label}</p>
+              <p className={`text-sm font-semibold leading-snug ${disabled ? 'text-muted' : active ? 'text-white' : 'text-ink'}`}>{s.label}</p>
+              {disabled && (
+                <p className="mt-1.5 text-[11px] text-muted leading-tight">No aplica para la fecha elegida</p>
+              )}
             </button>
           )
         })}
       </div>
+      {restricted && (
+        <p className="mt-2 text-xs text-muted">
+          Mostramos solo los horarios disponibles para la fecha seleccionada.
+        </p>
+      )}
     </fieldset>
   )
 }

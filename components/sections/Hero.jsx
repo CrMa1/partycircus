@@ -63,7 +63,7 @@ export default function Hero() {
                 href={BUSINESS.mapsLink}
                 ariaLabel={`Abrir ubicación de Party Circus Valle Dorado en Google Maps: ${BUSINESS.addressFull}`}
               />
-              <Stat icon={Clock} label="Horario" value="10:00–18:00 h" />
+              <Stat icon={Clock} label="Horario" value={"L · V 10:00–18:00 h\nS · D 11:00–16:00 h"} />
               <Stat icon={Star} label="Calificación" value={`${BUSINESS.socialProof.googleRating} / 5 · ${BUSINESS.socialProof.googleReviews}`} />
             </dl>
           </div>
@@ -124,7 +124,7 @@ function Stat({ icon: Icon, label, value, href, ariaLabel }) {
         <Icon className="h-3 w-3" />
         {label}
       </dt>
-      <dd className="mt-1 text-sm font-semibold text-ink">
+      <dd className="mt-1 text-sm font-semibold text-ink whitespace-pre-line leading-snug">
         {href ? (
           <a
             href={href}
