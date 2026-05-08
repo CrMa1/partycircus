@@ -1,4 +1,5 @@
-import { MapPin, Phone, Clock, MessageCircle, Navigation, Facebook, Instagram } from 'lucide-react'
+import { MapPin, Phone, Clock, Navigation, Facebook, Instagram } from 'lucide-react'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { BUSINESS } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 import { NEARBY_ZONES, EXTENDED_REFERENCES } from '@/lib/seo'
@@ -69,7 +70,7 @@ export default function Ubicacion() {
                 className="btn-whatsapp w-full"
                 aria-label="Cotizar por WhatsApp"
               >
-                <MessageCircle className="h-4 w-4" />
+                <WhatsAppIcon className="h-4 w-4" />
                 WhatsApp
               </a>
               <a

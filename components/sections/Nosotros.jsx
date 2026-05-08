@@ -1,5 +1,6 @@
-import { Star, ThumbsUp, MessageCircle, HeartHandshake, Users, Sparkles, Zap } from 'lucide-react'
+import { Star, ThumbsUp, HeartHandshake, Users, Sparkles, Zap } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { BUSINESS } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 
@@ -68,7 +69,7 @@ export default function Nosotros() {
 
             <div className="mt-8">
               <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn-whatsapp">
-                <MessageCircle className="h-5 w-5" />
+                <WhatsAppIcon className="h-5 w-5" />
                 Hablar por WhatsApp
               </a>
             </div>

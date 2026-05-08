@@ -1,5 +1,6 @@
-import { Check, MessageCircle, Info, Clock } from 'lucide-react'
+import { Check, Info, Clock } from 'lucide-react'
 import Modal from './Modal'
+import WhatsAppIcon from './WhatsAppIcon'
 import { whatsappUrl } from '@/lib/whatsapp'
 
 export default function PackageDetailModal({ open, onClose, pkg }) {
@@ -51,7 +52,7 @@ export default function PackageDetailModal({ open, onClose, pkg }) {
           rel="noopener noreferrer"
           className="btn-whatsapp flex-1"
         >
-          <MessageCircle className="h-5 w-5 shrink-0" />
+          <WhatsAppIcon className="h-5 w-5 shrink-0" />
           <span className="sm:hidden">Cotizar paquete</span>
           <span className="hidden sm:inline">Cotizar este paquete por WhatsApp</span>
         </a>

@@ -1,5 +1,6 @@
 import { CalendarDays, Clock, MapPin, MessageCircle, Sparkles, ShieldCheck, ArrowRight } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { whatsappUrl } from '@/lib/whatsapp'
 
 const WHATSAPP_MESSAGE = [
@@ -83,7 +84,7 @@ export default function Ludoteca() {
                 rel="noopener noreferrer"
                 className="btn-whatsapp w-full sm:w-auto"
               >
-                <MessageCircle className="h-5 w-5 shrink-0" />
+                <WhatsAppIcon className="h-5 w-5 shrink-0" />
                 <span className="sm:hidden">Cotizar ludoteca</span>
                 <span className="hidden sm:inline">Cotizar ludoteca por WhatsApp</span>
               </a>

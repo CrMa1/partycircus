@@ -1,4 +1,5 @@
-import { MessageCircle, Phone, ArrowRight } from 'lucide-react'
+import { Phone, ArrowRight } from 'lucide-react'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { BUSINESS } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 
@@ -28,7 +29,7 @@ export default function CTAFinal() {
                 </p>
                 <div className="mt-5 flex flex-col gap-3">
                   <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn-whatsapp w-full">
-                    <MessageCircle className="h-5 w-5" />
+                    <WhatsAppIcon className="h-5 w-5" />
                     Cotizar por WhatsApp
                     <ArrowRight className="h-4 w-4" />
                   </a>

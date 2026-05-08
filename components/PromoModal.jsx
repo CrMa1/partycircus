@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { X, MessageCircle, Sparkles } from 'lucide-react'
+import { X, Sparkles } from 'lucide-react'
 import SmartImage from './SmartImage'
+import WhatsAppIcon from './WhatsAppIcon'
 import { PROMO_MODAL } from '@/lib/promo'
 import { whatsappUrl } from '@/lib/whatsapp'
 import PromoBackgroundConfetti from './PromoBackgroundConfetti'
@@ -148,7 +149,7 @@ export default function PromoModal() {
               className="btn-whatsapp w-full sm:flex-1"
               onClick={handleClose}
             >
-              <MessageCircle className="h-5 w-5" />
+              <WhatsAppIcon className="h-5 w-5" />
               {PROMO_MODAL.ctaLabel}
             </a>
             <button

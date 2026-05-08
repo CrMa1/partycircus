@@ -1,5 +1,6 @@
-import { MessageCircle, ArrowRight, GraduationCap, Heart, Sparkles, Users } from 'lucide-react'
+import { ArrowRight, GraduationCap, Heart, Sparkles, Users } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { EVENTS_GALLERY } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 
@@ -54,7 +55,7 @@ export default function Graduaciones() {
                 rel="noopener noreferrer"
                 className="btn-whatsapp"
               >
-                <MessageCircle className="h-5 w-5" />
+                <WhatsAppIcon className="h-5 w-5" />
                 Cotizar evento
               </a>
               <a href="#cotizador" className="btn-outline">

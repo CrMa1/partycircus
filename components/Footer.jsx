@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageCircle, Facebook, Instagram, MapPin, Clock, Phone, ArrowUpRight } from 'lucide-react'
+import { Facebook, Instagram, MapPin, Clock, Phone, ArrowUpRight } from 'lucide-react'
 import SmartImage from './SmartImage'
+import WhatsAppIcon from './WhatsAppIcon'
 import { BUSINESS, NAV_LINKS } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 import PrivacyModal from './PrivacyModal'
@@ -88,7 +89,7 @@ export default function Footer() {
               <li>
                 <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 mt-2 rounded-full bg-whatsapp hover:bg-whatsapp-dark text-white px-5 h-11 text-sm font-bold transition-colors">
-                  <MessageCircle className="h-4 w-4" />
+                  <WhatsAppIcon className="h-4 w-4" />
                   Cotizar por WhatsApp
                   <ArrowUpRight className="h-3.5 w-3.5" />
                 </a>

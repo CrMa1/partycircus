@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, MessageCircle, HelpCircle } from 'lucide-react'
+import { Plus, HelpCircle } from 'lucide-react'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { FAQ as FAQ_DATA } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 
@@ -29,7 +30,7 @@ export default function FAQ() {
                 <p className="font-display font-bold text-ink">¿No ves tu pregunta?</p>
                 <p className="mt-1 text-sm text-ink-soft">Escríbenos por WhatsApp y un asesor responde al momento.</p>
                 <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn-whatsapp mt-4">
-                  <MessageCircle className="h-4 w-4" />
+                  <WhatsAppIcon className="h-4 w-4" />
                   Hacer mi pregunta
                 </a>
               </div>

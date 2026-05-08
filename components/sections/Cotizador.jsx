@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { Check, MessageCircle, Info, Calendar, Users, Clock, Tag, ArrowRight, CalendarCheck, ShieldCheck, Ticket, X as XIcon } from 'lucide-react'
+import { Check, Info, Calendar, Users, Clock, Tag, ArrowRight, CalendarCheck, ShieldCheck, Ticket, X as XIcon } from 'lucide-react'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { PACKAGES, SCHEDULES, PEOPLE_OPTIONS } from '@/lib/config'
 import { getPrice, formatMXN } from '@/lib/pricing'
 import { whatsappUrl } from '@/lib/whatsapp'
@@ -641,7 +642,7 @@ function QuoteSummary({
             rel="noopener noreferrer"
             className="group mt-6 inline-flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-2xl bg-whatsapp hover:bg-whatsapp-dark text-white font-bold h-14 px-3 text-[14px] sm:text-[15px] transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-whatsapp/40"
           >
-            <MessageCircle className="h-5 w-5 shrink-0" />
+            <WhatsAppIcon className="h-5 w-5 shrink-0" />
             <span className="sm:hidden">Cotizar por WhatsApp</span>
             <span className="hidden sm:inline">Enviar cotización por WhatsApp</span>
             <ArrowRight className="hidden sm:inline-block h-4 w-4 transition-transform group-hover:translate-x-0.5" />

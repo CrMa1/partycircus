@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageCircle } from 'lucide-react'
 import Modal from './Modal'
+import WhatsAppIcon from './WhatsAppIcon'
 import { whatsappUrl } from '@/lib/whatsapp'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -92,7 +92,7 @@ export default function JobsModal({ open, onClose }) {
 
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button type="submit" className="btn-whatsapp flex-1">
-            <MessageCircle className="h-4 w-4" />
+            <WhatsAppIcon className="h-4 w-4" />
             Enviar solicitud por WhatsApp
           </button>
           <button type="button" onClick={onClose} className="btn-outline flex-1">

@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Menu, X, MessageCircle } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import SmartImage from './SmartImage'
+import WhatsAppIcon from './WhatsAppIcon'
 import { BUSINESS, NAV_LINKS } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 import { cn } from '@/lib/utils'
@@ -59,7 +60,7 @@ export default function Navbar() {
               rel="noopener noreferrer"
               className="hidden sm:inline-flex btn-primary px-5 min-h-[42px] md:min-h-[44px] text-[14px]"
             >
-              <MessageCircle className="h-4 w-4" />
+              <WhatsAppIcon className="h-4 w-4" />
               Cotizar
             </a>
             <a
@@ -69,7 +70,7 @@ export default function Navbar() {
               aria-label="WhatsApp"
               className="sm:hidden inline-flex h-10 w-10 items-center justify-center rounded-full bg-whatsapp text-white"
             >
-              <MessageCircle className="h-4 w-4" />
+              <WhatsAppIcon className="h-4 w-4" />
             </a>
             <button
               type="button"
@@ -104,7 +105,7 @@ export default function Navbar() {
               className="btn-whatsapp mt-4 w-full"
               onClick={() => setOpen(false)}
             >
-              <MessageCircle className="h-5 w-5" />
+              <WhatsAppIcon className="h-5 w-5" />
               Cotizar por WhatsApp
             </a>
           </nav>

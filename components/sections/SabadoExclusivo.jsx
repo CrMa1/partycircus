@@ -1,4 +1,5 @@
-import { CalendarCheck, Clock, ShieldCheck, MessageCircle, Check } from 'lucide-react'
+import { CalendarCheck, Clock, ShieldCheck, Check } from 'lucide-react'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { whatsappUrl } from '@/lib/whatsapp'
 
 const BENEFITS = [
@@ -67,7 +68,7 @@ export default function SabadoExclusivo() {
               rel="noopener noreferrer"
               className="btn-whatsapp w-full lg:w-auto"
             >
-              <MessageCircle className="h-4 w-4" />
+              <WhatsAppIcon className="h-4 w-4" />
               Cotizar sábado por WhatsApp
             </a>
             <p className="text-[12px] text-muted leading-snug lg:text-right max-w-xs lg:max-w-[220px]">

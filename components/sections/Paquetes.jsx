@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, MessageCircle, ArrowRight, Star, Eye, Plus } from 'lucide-react'
+import { Check, ArrowRight, Star, Eye, Plus } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import PackageDetailModal from '@/components/PackageDetailModal'
 import { PACKAGES } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
@@ -125,7 +126,7 @@ function PackageCard({ pkg, onOpenDetail }) {
             rel="noopener noreferrer"
             className="btn-ghost w-full text-success hover:text-whatsapp-dark hover:bg-whatsapp/[0.06]"
           >
-            <MessageCircle className="h-4 w-4" />
+            <WhatsAppIcon className="h-4 w-4" />
             Pregunta por WhatsApp
           </a>
         </div>

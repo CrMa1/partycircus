@@ -1,5 +1,6 @@
-import { MessageCircle, Star, MapPin, Clock, ArrowRight, PartyPopper, Sparkles, Users } from 'lucide-react'
+import { Star, MapPin, Clock, ArrowRight, PartyPopper, Sparkles, Users } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
+import WhatsAppIcon from '@/components/WhatsAppIcon'
 import { BUSINESS } from '@/lib/config'
 import { whatsappUrl } from '@/lib/whatsapp'
 
@@ -35,7 +36,7 @@ export default function Hero() {
 
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn-whatsapp w-full sm:w-auto">
-                <MessageCircle className="h-5 w-5" />
+                <WhatsAppIcon className="h-5 w-5" />
                 Cotiza por WhatsApp
               </a>
               <a href="#paquetes" className="btn-outline w-full sm:w-auto">
